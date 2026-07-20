@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>sanj1k.cfg</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+        :root{
+            --bg:#080b0a;
+            --panel:#0d1211;
+            --gutter:#0a0f0e;
+            --border:#1a2321;
+            --border-soft:#141b19;
+            --text:#c7d1cd;
+            --comment:#4d5d59;
+            --cvar:#7fc9a8;
+            --string:#e8b26a;
+            --value:#6fb8d6;
+            --bool-true:#7fc9a8;
+            --bool-false:#c77b7b;
+            --accent:#5ee6a0;
+            --accent-dim:#2f8f66;
+            --linenum:#374440;
+        }
+
+        body{
+            background:
+                    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(94,230,160,0.05), transparent 60%),
+                    var(--bg);
+            color:var(--text);
+            font-family:'JetBrains Mono',monospace;
+            min-height:100vh;
+            padding:48px 20px 80px;
+        }
+
+        .wrap{
+            max-width:760px;
+            margin:0 auto;
+        }
+
+        /* ---- Identity block ---- */
+        .id-block{
+            margin-bottom:28px;
+            display:flex;
+            align-items:baseline;
+            gap:14px;
+            flex-wrap:wrap;
+        }
+        .id-caret{
+            color:var(--accent);
+            font-weight:700;
+            animation:blink 1.1s step-end infinite;
+        }
+        @keyframes blink{
+            0%,45%{opacity:1;}
+            50%,95%{opacity:0;}
+            100%{opacity:1;}
+        }
+        .id-name{
+            font-size:34px;
+            font-weight:800;
+            color:#eef5f1;
+            letter-spacing:-.5px;
+        }
+        .id-tag{
+            font-size:12px;
+            color:var(--comment);
+            letter-spacing:.5px;
+            padding-top:6px;
+        }
+        .id-tag .flag{ margin-right:5px; }
+        .id-status{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            font-size:11px;
+            color:var(--accent);
+            border:1px solid var(--accent-dim);
+            background:rgba(94,230,160,0.06);
+            padding:3px 9px 3px 7px;
+            border-radius:20px;
+            letter-spacing:.4px;
+            text-transform:uppercase;
+        }
+        .id-status::before{
+            content:'';
+            width:6px;height:6px;border-radius:50%;
+            background:var(--accent);
+            box-shadow:0 0 6px var(--accent);
+        }
+
+        /* ---- Editor chrome ---- */
+        .editor{
+            background:var(--panel);
+            border:1px solid var(--border);
+            border-radius:8px;
+            overflow:hidden;
+            box-shadow:0 30px 60px -25px rgba(0,0,0,0.6);
+        }
+        .editor-tab{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:10px 16px;
+            background:var(--gutter);
+            border-bottom:1px solid var(--border);
+        }
+        .tab-left{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+        .dots{ display:flex; gap:6px; }
+        .dot{ width:9px;height:9px;border-radius:50%; }
+        .dot.r{background:#4a3535;}
+        .dot.y{background:#4a4535;}
+        .dot.g{background:#354a3a;}
+        .filename{
+            font-size:12px;
+            color:var(--text);
+            font-weight:500;
+            display:flex;
+            align-items:center;
+            gap:6px;
+        }
+        .filename .dim{ color:var(--comment); }
+        .copy-all{
+            font-family:'JetBrains Mono',monospace;
+            font-size:11px;
+            color:var(--comment);
+            background:transparent;
+            border:1px solid var(--border);
+            border-radius:5px;
+            padding:5px 11px;
+            cursor:pointer;
+            letter-spacing:.3px;
+            transition:color .15s,border-color .15s,background .15s;
+        }
+        .copy-all:hover{ color:var(--accent); border-color:var(--accent-dim); background:rgba(94,230,160,0.05); }
+        .copy-all.done{ color:var(--accent); border-color:var(--accent-dim); }
+
+        /* ---- Code body ---- */
+        .code{
+            display:grid;
+            grid-template-columns:44px 1fr;
+            font-size:13px;
+            line-height:1.85;
+            padding:14px 0;
+        }
+        .gutter-col{
+            background:var(--gutter);
+            color:var(--linenum);
+            text-align:right;
+            padding-right:14px;
+            user-select:none;
+            border-right:1px solid var(--border-soft);
+        }
+        .gutter-col div{ padding:0 0; height:1.85em; }
+        .lines-col{ padding-left:18px; overflow-x:auto; }
+
+        .line{
+            white-space:pre;
+            height:1.85em;
+            display:flex;
+            align-items:center;
+            padding-right:16px;
+            border-radius:3px;
+            position:relative;
+        }
+        .line.hoverable:hover{
+            background:rgba(94,230,160,0.045);
+        }
+        .line.blank{ height:1.85em; }
+
+        .cmt{ color:var(--comment); }
+        .cmt-head{ color:var(--comment); font-weight:600; }
+        .cvar{ color:var(--cvar); }
+        .val-str{ color:var(--string); }
+        .val-num{ color:var(--value); }
+        .val-true{ color:var(--bool-true); }
+        .val-false{ color:var(--bool-false); }
+        .quote{ color:#3f4d49; }
+
+        .copy-line-btn{
+            opacity:0;
+            margin-left:auto;
+            font-size:10px;
+            color:var(--comment);
+            background:var(--panel);
+            border:1px solid var(--border);
+            border-radius:4px;
+            padding:2px 7px;
+            cursor:pointer;
+            transition:opacity .12s, color .15s, border-color .15s;
+            flex-shrink:0;
+        }
+        .line.hoverable:hover .copy-line-btn{ opacity:1; }
+        .copy-line-btn:hover{ color:var(--accent); border-color:var(--accent-dim); }
+        .copy-line-btn.done{ opacity:1; color:var(--accent); border-color:var(--accent-dim); }
+
+        /* ---- Footer status bar ---- */
+        .statusbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:8px 16px;
+            background:var(--gutter);
+            border-top:1px solid var(--border);
+            font-size:10.5px;
+            color:var(--comment);
+            letter-spacing:.3px;
+        }
+        .statusbar span{ display:flex; align-items:center; gap:6px; }
+        .statusbar .accentdot{
+            width:6px;height:6px;border-radius:50%;background:var(--accent);
+        }
+
+        #toast{
+            position:fixed;bottom:28px;left:50%;
+            transform:translateX(-50%) translateY(14px);
+            background:var(--panel);border:1px solid var(--accent-dim);
+            color:var(--accent);
+            font-size:11.5px;font-family:'JetBrains Mono',monospace;
+            padding:9px 20px;border-radius:6px;
+            opacity:0;pointer-events:none;
+            transition:opacity .2s,transform .2s;
+            white-space:nowrap;
+            letter-spacing:.3px;
+        }
+        #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+        @media(max-width:600px){
+            .id-name{ font-size:26px; }
+            .code{ font-size:12px; grid-template-columns:32px 1fr; }
+            .gutter-col{ padding-right:8px; }
+            .lines-col{ padding-left:12px; }
+            .copy-line-btn{ display:none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+
+    <div class="id-block">
+        <span class="id-caret">&gt;</span>
+        <span class="id-name">sanj1k</span>
+    </div>
+
+    <div class="editor">
+        <div class="editor-tab">
+            <div class="tab-left">
+                <div class="dots">
+                    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+                </div>
+                <div class="filename">autoexec<span class="dim">.cfg</span></div>
+            </div>
+            <button class="copy-all" id="copyAll" onclick="copyAllCmds()">Copy all</button>
+        </div>
+
+        <div class="code" id="code"></div>
+
+        <div class="statusbar">
+            <span><span class="accentdot"></span>autoexec.cfg</span>
+            <span id="lineCount">0 lines</span>
+        </div>
+    </div>
+
+</div>
+
+<div id="toast">Copied to clipboard</div>
+
+<script>
+    // ---- Config data: [type, ...fields] ----
+    // type: 'comment' | 'blank' | 'cvar'
+    const config = [
+        ['comment', '// sensitivity & mouse'],
+        ['cvar', 'sensitivity', '2.3', 'num'],
+        ['cvar', 'm_pitch', '0.022', 'num'],
+        ['cvar', 'm_yaw', '0.022', 'num'],
+        ['cvar', 'zoom_sensitivity_ratio', '1', 'num'],
+        ['blank'],
+        ['comment', '// crosshair'],
+        ['cvar', 'cl_crosshairstyle', '4', 'num'],
+        ['cvar', 'cl_crosshairsize', '1', 'num'],
+        ['cvar', 'cl_crosshairthickness', '1', 'num'],
+        ['cvar', 'cl_crosshairgap', '-4', 'num'],
+        ['cvar', 'cl_crosshairdot', 'false', 'bool'],
+        ['cvar', 'cl_crosshair_t', 'false', 'bool'],
+        ['cvar', 'cl_crosshairalpha', '255', 'num'],
+        ['cvar', 'cl_crosshaircolor', '4', 'num'],
+        ['cvar', 'cl_crosshaircolor_r', '255', 'num'],
+        ['cvar', 'cl_crosshaircolor_g', '255', 'num'],
+        ['cvar', 'cl_crosshaircolor_b', '255', 'num'],
+        ['cvar', 'cl_crosshair_drawoutline', 'false', 'bool'],
+        ['cvar', 'cl_crosshair_recoil', 'false', 'bool'],
+        ['cvar', 'cl_crosshairusealpha', 'true', 'bool'],
+        ['blank'],
+        ['comment', '// viewmodel'],
+        ['cvar', 'viewmodel_fov', '68', 'num'],
+        ['cvar', 'viewmodel_offset_x', '2.5', 'num'],
+        ['cvar', 'viewmodel_offset_y', '0', 'num'],
+        ['cvar', 'viewmodel_offset_z', '-1.5', 'num'],
+        ['cvar', 'viewmodel_presetpos', '3', 'num'],
+        ['blank'],
+        ['comment', '// hud & radar'],
+        ['cvar', 'hud_scaling', '1', 'num'],
+        ['cvar', 'cl_hud_color', '9', 'num'],
+        ['cvar', 'cl_hud_radar_scale', '0.91', 'num'],
+        ['cvar', 'cl_radar_scale', '0.4', 'num'],
+        ['cvar', 'cl_radar_always_centered', 'true', 'bool'],
+        ['cvar', 'cl_radar_rotate', 'true', 'bool'],
+        ['cvar', 'cl_showfps', '1', 'num'],
+        ['cvar', 'cl_showloadout', 'true', 'bool'],
+        ['blank'],
+        ['comment', '// audio'],
+        ['cvar', 'volume', '0.5', 'num'],
+        ['cvar', 'snd_mixahead', '0.001', 'num'],
+        ['cvar', 'snd_mute_losefocus', 'true', 'bool'],
+        ['cvar', 'snd_headphone_eq', '0', 'num'],
+        ['cvar', 'snd_spatialize_lerp', '0', 'num'],
+        ['blank'],
+        ['comment', '// buy menu'],
+        ['cvar', 'cl_buymenu_ct_nextround_high', '5000', 'num'],
+        ['cvar', 'cl_buymenu_ct_nextround_low', '1400', 'num'],
+        ['cvar', 'cl_buymenu_t_nextround_high', '5000', 'num'],
+        ['cvar', 'cl_buymenu_t_nextround_low', '1400', 'num'],
+        ['blank'],
+        ['comment', '// misc'],
+        ['cvar', 'cl_prefer_lefthanded', 'false', 'bool'],
+        ['cvar', 'cl_color', '1', 'num'],
+        ['cvar', 'mm_dedicated_search_maxping', '150', 'num'],
+        ['cvar', 'con_enable', 'true', 'bool'],
+        ['cvar', 'cl_use_opens_buy_menu', 'false', 'bool'],
+        ['cvar', 'cl_teammate_colors_show', '1', 'num'],
+    ];
+
+    function escapeHtml(s){
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function buildLine(row, idx){
+        if(row[0] === 'blank'){
+            return {html: '&nbsp;', copy: null};
+        }
+        if(row[0] === 'comment'){
+            return {html: `<span class="cmt-head">${escapeHtml(row[1])}</span>`, copy: null};
+        }
+        // cvar
+        const [, name, val, kind] = row;
+        let valSpan;
+        if(kind === 'bool'){
+            valSpan = `<span class="${val==='true' ? 'val-true' : 'val-false'}">${val}</span>`;
+        } else {
+            valSpan = `<span class="val-num">${val}</span>`;
+        }
+        const copyText = `${name} "${val}"`;
+        const html = `<span class="cvar">${name}</span> <span class="quote">"</span>${valSpan}<span class="quote">"</span>`;
+        return {html, copy: copyText};
+    }
+
+    const codeEl = document.getElementById('code');
+    const gutter = document.createElement('div');
+    gutter.className = 'gutter-col';
+    const linesCol = document.createElement('div');
+    linesCol.className = 'lines-col';
+
+    let visibleLine = 0;
+    config.forEach((row, i) => {
+        visibleLine++;
+        const g = document.createElement('div');
+        g.textContent = visibleLine;
+        gutter.appendChild(g);
+
+        const {html, copy} = buildLine(row, i);
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'line' + (copy ? ' hoverable' : (row[0]==='blank' ? ' blank' : ''));
+        lineDiv.innerHTML = html;
+
+        if(copy){
+            const btnId = 'ln' + i;
+            const btn = document.createElement('button');
+            btn.className = 'copy-line-btn';
+            btn.id = btnId;
+            btn.textContent = 'copy';
+            btn.onclick = () => copy_(copy, btnId);
+            lineDiv.appendChild(btn);
+        }
+        linesCol.appendChild(lineDiv);
+    });
+
+    codeEl.appendChild(gutter);
+    codeEl.appendChild(linesCol);
+    document.getElementById('lineCount').textContent = visibleLine + ' lines';
+
+    // ---- Clipboard helpers ----
+    const toast = document.getElementById('toast');
+    let toastTimer;
+    function showToast(msg){
+        toast.textContent = msg || 'Copied to clipboard';
+        clearTimeout(toastTimer);
+        toast.classList.add('show');
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function fallbackCopy(text){
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        try{ document.execCommand('copy'); } catch(e){ console.warn('Copy failed', e); }
+        document.body.removeChild(ta);
+    }
+
+    function copy_(text, btnId){
+        const btn = document.getElementById(btnId);
+        const onDone = () => {
+            if(btn){
+                const orig = btn.textContent;
+                btn.textContent = '✓';
+                btn.classList.add('done');
+                setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 1400);
+            }
+            showToast();
+        };
+        if(navigator.clipboard && window.isSecureContext){
+            navigator.clipboard.writeText(text).then(onDone).catch(() => { fallbackCopy(text); onDone(); });
+        } else {
+            fallbackCopy(text); onDone();
+        }
+    }
+
+    function copyAllCmds(){
+        const cmds = config
+            .filter(r => r[0] === 'cvar')
+            .map(r => `${r[1]} "${r[2]}"`)
+            .join('; ');
+        const btn = document.getElementById('copyAll');
+        const onDone = () => {
+            const orig = btn.textContent;
+            btn.textContent = 'Copied ✓';
+            btn.classList.add('done');
+            setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 1600);
+            showToast('All commands copied');
+        };
+        if(navigator.clipboard && window.isSecureContext){
+            navigator.clipboard.writeText(cmds).then(onDone).catch(() => { fallbackCopy(cmds); onDone(); });
+        } else {
+            fallbackCopy(cmds); onDone();
+        }
+    }
+</script>
+</body>
+</html>
