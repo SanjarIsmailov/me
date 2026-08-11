@@ -1,458 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>sanj1k.cfg</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#080d15">
+    <title>sanj1k — player profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+
     <style>
-        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-
         :root{
-            --bg:#080b0a;
-            --panel:#0d1211;
-            --gutter:#0a0f0e;
-            --border:#1a2321;
-            --border-soft:#141b19;
-            --text:#c7d1cd;
-            --comment:#4d5d59;
-            --cvar:#7fc9a8;
-            --string:#e8b26a;
-            --value:#6fb8d6;
-            --bool-true:#7fc9a8;
-            --bool-false:#c77b7b;
-            --accent:#5ee6a0;
-            --accent-dim:#2f8f66;
-            --linenum:#374440;
+            --bg:#070b12;
+            --bg2:#0a1019;
+            --panel:#0d1420;
+            --panel2:#111a27;
+            --line:#243142;
+            --line2:#1a2533;
+            --text:#f7f9fb;
+            --muted:#9aa8b8;
+            --dim:#68788b;
+            --white:#fff;
+            --shadow:0 18px 45px rgba(0,0,0,.28);
+            --display:'Rajdhani',sans-serif;
+            --body:'Inter',sans-serif;
+            --mono:'JetBrains Mono',monospace;
         }
-
+        *{box-sizing:border-box;margin:0;padding:0}
+        html{background:var(--bg);scroll-behavior:smooth}
         body{
-            background:
-                    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(94,230,160,0.05), transparent 60%),
-                    var(--bg);
-            color:var(--text);
-            font-family:'JetBrains Mono',monospace;
             min-height:100vh;
-            padding:48px 20px 80px;
+            color:var(--text);
+            font-family:var(--body);
+            background:
+                    radial-gradient(circle at 15% -5%,rgba(62,83,110,.18),transparent 30%),
+                    radial-gradient(circle at 90% 5%,rgba(41,58,78,.14),transparent 28%),
+                    linear-gradient(180deg,#070b12,#090e16 60%,#070b12);
+            padding-bottom:48px;
         }
-
-        .wrap{
-            max-width:760px;
-            margin:0 auto;
+        body:before{
+            content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.32;
+            background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+            background-size:44px 44px;
+            mask-image:linear-gradient(to bottom,#000 0%,transparent 85%);
         }
-
-        /* ---- Identity block ---- */
-        .id-block{
-            margin-bottom:28px;
+        a{color:inherit}
+        button{font:inherit}
+        .topbar{
+            position:sticky;top:0;z-index:20;
+            height:58px;
+            background:rgba(7,11,18,.92);
+            border-bottom:1px solid var(--line);
+            backdrop-filter:blur(14px);
+        }
+        .topbar-inner{
+            width:min(1100px,100%);
+            height:100%;
+            margin:auto;
+            padding:0 18px;
+            display:flex;
+            align-items:center;
+            gap:30px;
+        }
+        .brand{
+            text-decoration:none;
             display:flex;
             align-items:baseline;
-            gap:14px;
-            flex-wrap:wrap;
-        }
-        .id-caret{
-            color:var(--accent);
-            font-weight:700;
-            animation:blink 1.1s step-end infinite;
-        }
-        @keyframes blink{
-            0%,45%{opacity:1;}
-            50%,95%{opacity:0;}
-            100%{opacity:1;}
-        }
-        .id-name{
-            font-size:34px;
-            font-weight:800;
-            color:#eef5f1;
-            letter-spacing:-.5px;
-        }
-        .id-tag{
-            font-size:12px;
-            color:var(--comment);
-            letter-spacing:.5px;
-            padding-top:6px;
-        }
-        .id-tag .flag{ margin-right:5px; }
-        .id-status{
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-            font-size:11px;
-            color:var(--accent);
-            border:1px solid var(--accent-dim);
-            background:rgba(94,230,160,0.06);
-            padding:3px 9px 3px 7px;
-            border-radius:20px;
-            letter-spacing:.4px;
-            text-transform:uppercase;
-        }
-        .id-status::before{
-            content:'';
-            width:6px;height:6px;border-radius:50%;
-            background:var(--accent);
-            box-shadow:0 0 6px var(--accent);
-        }
-
-        /* ---- Editor chrome ---- */
-        .editor{
-            background:var(--panel);
-            border:1px solid var(--border);
-            border-radius:8px;
-            overflow:hidden;
-            box-shadow:0 30px 60px -25px rgba(0,0,0,0.6);
-        }
-        .editor-tab{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            padding:10px 16px;
-            background:var(--gutter);
-            border-bottom:1px solid var(--border);
-        }
-        .tab-left{
-            display:flex;
-            align-items:center;
-            gap:14px;
-        }
-        .dots{ display:flex; gap:6px; }
-        .dot{ width:9px;height:9px;border-radius:50%; }
-        .dot.r{background:#4a3535;}
-        .dot.y{background:#4a4535;}
-        .dot.g{background:#354a3a;}
-        .filename{
-            font-size:12px;
-            color:var(--text);
-            font-weight:500;
-            display:flex;
-            align-items:center;
-            gap:6px;
-        }
-        .filename .dim{ color:var(--comment); }
-        .copy-all{
-            font-family:'JetBrains Mono',monospace;
-            font-size:11px;
-            color:var(--comment);
-            background:transparent;
-            border:1px solid var(--border);
-            border-radius:5px;
-            padding:5px 11px;
-            cursor:pointer;
-            letter-spacing:.3px;
-            transition:color .15s,border-color .15s,background .15s;
-        }
-        .copy-all:hover{ color:var(--accent); border-color:var(--accent-dim); background:rgba(94,230,160,0.05); }
-        .copy-all.done{ color:var(--accent); border-color:var(--accent-dim); }
-
-        /* ---- Code body ---- */
-        .code{
-            display:grid;
-            grid-template-columns:44px 1fr;
-            font-size:13px;
-            line-height:1.85;
-            padding:14px 0;
-        }
-        .gutter-col{
-            background:var(--gutter);
-            color:var(--linenum);
-            text-align:right;
-            padding-right:14px;
-            user-select:none;
-            border-right:1px solid var(--border-soft);
-        }
-        .gutter-col div{ padding:0 0; height:1.85em; }
-        .lines-col{ padding-left:18px; overflow-x:auto; }
-
-        .line{
-            white-space:pre;
-            height:1.85em;
-            display:flex;
-            align-items:center;
-            padding-right:16px;
-            border-radius:3px;
-            position:relative;
-        }
-        .line.hoverable:hover{
-            background:rgba(94,230,160,0.045);
-        }
-        .line.blank{ height:1.85em; }
-
-        .cmt{ color:var(--comment); }
-        .cmt-head{ color:var(--comment); font-weight:600; }
-        .cvar{ color:var(--cvar); }
-        .val-str{ color:var(--string); }
-        .val-num{ color:var(--value); }
-        .val-true{ color:var(--bool-true); }
-        .val-false{ color:var(--bool-false); }
-        .quote{ color:#3f4d49; }
-
-        .copy-line-btn{
-            opacity:0;
-            margin-left:auto;
-            font-size:10px;
-            color:var(--comment);
-            background:var(--panel);
-            border:1px solid var(--border);
-            border-radius:4px;
-            padding:2px 7px;
-            cursor:pointer;
-            transition:opacity .12s, color .15s, border-color .15s;
-            flex-shrink:0;
-        }
-        .line.hoverable:hover .copy-line-btn{ opacity:1; }
-        .copy-line-btn:hover{ color:var(--accent); border-color:var(--accent-dim); }
-        .copy-line-btn.done{ opacity:1; color:var(--accent); border-color:var(--accent-dim); }
-
-        /* ---- Footer status bar ---- */
-        .statusbar{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            padding:8px 16px;
-            background:var(--gutter);
-            border-top:1px solid var(--border);
-            font-size:10.5px;
-            color:var(--comment);
-            letter-spacing:.3px;
-        }
-        .statusbar span{ display:flex; align-items:center; gap:6px; }
-        .statusbar .accentdot{
-            width:6px;height:6px;border-radius:50%;background:var(--accent);
-        }
-
-        #toast{
-            position:fixed;bottom:28px;left:50%;
-            transform:translateX(-50%) translateY(14px);
-            background:var(--panel);border:1px solid var(--accent-dim);
-            color:var(--accent);
-            font-size:11.5px;font-family:'JetBrains Mono',monospace;
-            padding:9px 20px;border-radius:6px;
-            opacity:0;pointer-events:none;
-            transition:opacity .2s,transform .2s;
+            gap:7px;
+            font:700 22px var(--display);
+            letter-spacing:2px;
             white-space:nowrap;
-            letter-spacing:.3px;
         }
-        #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+        .brand small{
+            font:600 9px var(--mono);
+            color:#8b98a8;
+            letter-spacing:1px;
+        }
+        .nav{
+            display:flex;
+            align-items:center;
+            gap:5px;
+        }
+        .nav a{
+            padding:9px 11px;
+            border-radius:5px;
+            color:#8593a4;
+            text-decoration:none;
+            font-size:11px;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:.4px;
+        }
+        .nav a:hover{background:#111b29;color:#fff}
+        .nav-spacer{margin-left:auto}
+        .profile-tag{
+            display:flex;align-items:center;gap:8px;
+            color:#c5ced8;
+            font:600 11px var(--mono);
+        }
+        .profile-dot{
+            width:7px;height:7px;border-radius:50%;
+            background:#fff;box-shadow:0 0 10px rgba(255,255,255,.4);
+        }
+        .page{
+            width:min(1100px,100%);
+            margin:0 auto;
+            padding:24px 18px 0;
+        }
+        .profile-card{
+            display:grid;
+            grid-template-columns:190px 1fr;
+            min-height:190px;
+            overflow:hidden;
+            border:1px solid var(--line);
+            border-radius:7px;
+            background:linear-gradient(110deg,#0b111b,#0d1520 55%,#0a1019);
+            box-shadow:var(--shadow);
+        }
+        .avatar{
+            min-height:190px;
+            background:#0a1018;
+            border-right:1px solid var(--line);
+            position:relative;
+            overflow:hidden;
+        }
+        .avatar img{
+            width:100%;height:100%;
+            display:block;
+            object-fit:cover;
+            object-position:center top;
+        }
+        .avatar:after{
+            content:"";
+            position:absolute;inset:0;
+            background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.25));
+            pointer-events:none;
+        }
+        .profile-info{
+            min-width:0;
+            padding:27px 28px 22px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+        }
+        .kicker{
+            color:#75859a;
+            font:600 10px var(--mono);
+            text-transform:uppercase;
+            letter-spacing:1.5px;
+            margin-bottom:7px;
+        }
+        .name{
+            font:700 clamp(25px,3vw,35px) var(--display);
+            line-height:1;
+            letter-spacing:.2px;
+        }
+        .name .nick{color:#aeb9c6}
+        .subtitle{
+            color:#738398;
+            font:600 9px var(--mono);
+            letter-spacing:1px;
+            margin-top:7px;
+        }
+        .actions{
+            display:flex;flex-wrap:wrap;gap:9px;
+            margin-top:21px;
+        }
+        .btn{
+            display:inline-flex;align-items:center;justify-content:center;gap:8px;
+            min-height:38px;
+            padding:0 14px;
+            border-radius:5px;
+            border:1px solid #354457;
+            background:#111a27;
+            color:#eaf0f5;
+            text-decoration:none;
+            font-size:11px;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:.3px;
+            transition:.18s ease;
+        }
+        .btn:hover{
+            transform:translateY(-1px);
+            background:#182331;
+            border-color:#596777;
+            box-shadow:0 8px 22px rgba(0,0,0,.2);
+        }
+        .btn.trade{
+            background:#fff;color:#0a1018;border-color:#fff;
+        }
+        .btn.trade:hover{background:#dfe4e9}
+        .icon{width:16px;height:16px;fill:currentColor;flex:0 0 16px}
+        .stats{
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            margin-top:14px;
+            border:1px solid var(--line);
+            border-radius:6px;
+            overflow:hidden;
+            background:rgba(13,20,32,.85);
+        }
+        .stat{
+            min-width:0;padding:14px 17px;
+            border-right:1px solid var(--line);
+        }
+        .stat:last-child{border-right:0}
+        .stat b{display:block;font:700 17px var(--mono);white-space:nowrap}
+        .stat span{
+            display:block;margin-top:4px;
+            color:var(--dim);font:600 9px var(--mono);
+            text-transform:uppercase;letter-spacing:1px;
+        }
+        .chips{
+            display:flex;gap:9px;flex-wrap:wrap;
+            margin-top:12px;
+        }
+        .chip{
+            flex:0 1 auto;
+            min-width:125px;
+            padding:9px 12px;
+            border:1px solid var(--line);
+            border-radius:5px;
+            background:#0c131e;
+        }
+        .chip small{
+            display:block;color:var(--dim);
+            font:600 8px var(--mono);text-transform:uppercase;letter-spacing:.8px;
+        }
+        .chip strong{
+            display:block;margin-top:3px;
+            font:600 12px var(--mono);color:#e7edf3;
+        }
+        .section{
+            margin-top:27px;
+        }
+        .section-head{
+            display:flex;align-items:center;justify-content:space-between;
+            gap:12px;margin-bottom:12px;
+        }
+        .section-title{
+            display:flex;align-items:center;gap:9px;
+            font:700 20px var(--display);
+        }
+        .section-title:before{
+            content:"";width:4px;height:19px;border-radius:2px;background:#fff;
+        }
+        .copy-all{
+            border:1px solid #3b4858;
+            border-radius:5px;
+            background:#111a27;color:#e7edf3;
+            padding:8px 13px;cursor:pointer;
+            font-size:10px;font-weight:700;text-transform:uppercase;
+        }
+        .copy-all:hover{background:#1a2533}
+        .copy-all.done{background:#fff;color:#0a1018;border-color:#fff}
+        .cmd-grid{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:12px;
+        }
+        .cmd-card{
+            min-width:0;
+            overflow:hidden;
+            border:1px solid var(--line);
+            border-radius:6px;
+            background:#0d1420;
+            box-shadow:0 10px 25px rgba(0,0,0,.12);
+        }
+        .cmd-head{
+            display:flex;align-items:center;gap:8px;
+            padding:11px 13px;
+            background:#111a27;
+            border-bottom:1px solid var(--line2);
+        }
+        .swatch{width:7px;height:7px;border-radius:2px;background:#fff}
+        .cmd-title{
+            color:#aab7c6;
+            font-size:11px;font-weight:700;
+            text-transform:uppercase;letter-spacing:.5px;
+        }
+        .cmd-row{
+            min-width:0;
+            display:flex;align-items:center;justify-content:space-between;gap:10px;
+            padding:8px 10px 8px 13px;
+            border-top:1px solid var(--line2);
+        }
+        .cmd-row:first-of-type{border-top:0}
+        .cmd-row:hover{background:#101925}
+        .cmd{
+            min-width:0;overflow:hidden;
+            display:flex;align-items:baseline;gap:7px;
+            font:500 11px var(--mono);
+        }
+        .cmd-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e7edf3}
+        .cmd-val{flex:0 0 auto;color:#aeb9c6;font-weight:600}
+        .cmd-copy{
+            flex:0 0 auto;
+            border:1px solid #304052;
+            background:transparent;color:#718195;
+            border-radius:4px;padding:4px 8px;
+            cursor:pointer;font-size:9px;font-weight:700;
+        }
+        .cmd-copy:hover{color:#fff;border-color:#667586;background:#151f2c}
+        .cmd-copy.done{color:#0b1118;background:#fff;border-color:#fff}
+        .footnote{
+            text-align:center;color:#566679;
+            margin:22px 0 0;font:500 9px var(--mono);
+        }
+        .toast{
+            position:fixed;left:50%;bottom:24px;
+            transform:translate(-50%,15px);
+            opacity:0;pointer-events:none;
+            padding:10px 15px;border:1px solid #354457;border-radius:6px;
+            background:#111a27;color:#fff;font-size:11px;
+            transition:.2s;z-index:50;
+        }
+        .toast.show{opacity:1;transform:translate(-50%,0)}
 
-        @media(max-width:600px){
-            .id-name{ font-size:26px; }
-            .code{ font-size:12px; grid-template-columns:32px 1fr; }
-            .gutter-col{ padding-right:8px; }
-            .lines-col{ padding-left:12px; }
-            .copy-line-btn{ display:none; }
+        @media(max-width:760px){
+            .topbar{height:auto;min-height:54px}
+            .topbar-inner{padding:9px 14px;gap:14px}
+            .nav{overflow:auto;scrollbar-width:none;flex:1}
+            .nav::-webkit-scrollbar{display:none}
+            .nav a{padding:7px 8px;font-size:9px;white-space:nowrap}
+            .profile-tag{display:none}
+            .page{padding:14px 12px 0}
+            .profile-card{grid-template-columns:125px 1fr;min-height:150px}
+            .avatar{min-height:150px}
+            .profile-info{padding:18px 16px}
+            .name{font-size:24px}
+            .actions{margin-top:15px;gap:7px}
+            .btn{min-height:34px;padding:0 10px;font-size:9px}
+            .icon{width:14px;height:14px;flex-basis:14px}
+            .stats{grid-template-columns:repeat(2,1fr)}
+            .stat:nth-child(2){border-right:0}
+            .stat:nth-child(-n+2){border-bottom:1px solid var(--line)}
+            .stat{padding:12px}
+            .cmd-grid{grid-template-columns:1fr}
+        }
+        @media(max-width:480px){
+            body{padding-bottom:30px}
+            .brand{font-size:19px}
+            .topbar-inner{gap:8px}
+            .nav{gap:1px}
+            .nav a{padding:7px 6px}
+            .page{padding:10px 9px 0}
+            .profile-card{grid-template-columns:92px 1fr;min-height:132px}
+            .avatar{min-height:132px}
+            .profile-info{padding:14px 12px}
+            .kicker{font-size:8px;margin-bottom:5px}
+            .name{font-size:20px;line-height:1.02}
+            .subtitle{font-size:7px;letter-spacing:.7px}
+            .actions{margin-top:11px;gap:5px}
+            .btn{min-height:31px;padding:0 8px;font-size:8px;gap:5px}
+            .icon{width:13px;height:13px;flex-basis:13px}
+            .stats{margin-top:10px}
+            .stat{padding:10px}
+            .stat b{font-size:14px}
+            .stat span{font-size:7px}
+            .chips{margin-top:8px}
+            .chip{min-width:0;flex:1;padding:8px 9px}
+            .chip small{font-size:7px}
+            .chip strong{font-size:10px}
+            .section{margin-top:21px}
+            .section-title{font-size:18px}
+            .copy-all{padding:7px 9px;font-size:8px}
+            .cmd-head{padding:10px}
+            .cmd-row{padding:8px}
+            .cmd{font-size:10px}
+            .cmd-copy{padding:4px 7px;font-size:8px}
         }
     </style>
 </head>
+
 <body>
-
-<div class="wrap">
-
-    <div class="id-block">
-        <span class="id-caret">&gt;</span>
-        <span class="id-name">sanj1k</span>
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" href="#">SANJ1K <small>CS2</small></a>
+        <nav class="nav">
+            <a href="#profile">Profile</a>
+            <a href="#config">Config</a>
+            <a href="#commands">Commands</a>
+            <a href="https://www.faceit.com/en/players/sanj1k1337" target="_blank" rel="noopener">FACEIT</a>
+            <a href="https://steamcommunity.com/id/sanj1k/" target="_blank" rel="noopener">Steam</a>
+        </nav>
+        <div class="nav-spacer"></div>
+        <div class="profile-tag"><i class="profile-dot"></i>sanj1k</div>
     </div>
+</header>
 
-    <div class="editor">
-        <div class="editor-tab">
-            <div class="tab-left">
-                <div class="dots">
-                    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-                </div>
-                <div class="filename">autoexec<span class="dim">.cfg</span></div>
+<main class="page">
+    <section class="profile-card" id="profile">
+        <div class="avatar">
+            <img src="avatar.jpg" alt="sanj1k profile photo">
+        </div>
+        <div class="profile-info">
+            <div class="kicker">Player profile</div>
+            <h1 class="name">Sanjar <span class="nick">"sanj1k"</span> Ismailov</h1>
+            <div class="subtitle">CS2 PLAYER · UZBEKISTAN</div>
+            <div class="actions">
+                <a class="btn" href="https://steamcommunity.com/id/sanj1k/" target="_blank" rel="noopener">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 2.2a9.8 9.8 0 0 0-9.67 8.2l5.14 2.13a2.82 2.82 0 1 1-.34 2.65l-3.65-1.51A9.8 9.8 0 1 0 12 2.2Zm5.33 5.13a2.72 2.72 0 1 1 0 5.44 2.72 2.72 0 0 1 0-5.44Zm0 1.35a1.37 1.37 0 1 0 0 2.74 1.37 1.37 0 0 0 0-2.74Z"/></svg>
+                    Steam
+                </a>
+                <a class="btn" href="https://www.faceit.com/en/players/sanj1k1337" target="_blank" rel="noopener">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16l-4.6 5.2L20 15.8H4l4.55-5.8L4 4Zm5.85 6 2.18 2.6L14.2 10l-2.17-2.5L9.85 10Z"/></svg>
+                    FACEIT
+                </a>
+                <a class="btn trade" href="https://steamcommunity.com/tradeoffer/new/?partner=778967474&token=77mPlRxl" target="_blank" rel="noopener">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M7 4h10a2 2 0 0 1 2 2v3h-2V6H7v4l-2-2-1.4 1.4L7 13.8 10.4 9.4 9 8l-2 2V4Zm10 7.8-3.4 4.4L15 18l2-2v4H7a2 2 0 0 1-2-2v-3h2v3h10v-4l2 2 1.4-1.4-3.4-4.4Z"/></svg>
+                    Trade
+                </a>
             </div>
-            <button class="copy-all" id="copyAll" onclick="copyAllCmds()">Copy all</button>
         </div>
+    </section>
 
-        <div class="code" id="code"></div>
+    <section class="stats" id="config">
+        <div class="stat"><b>2.30</b><span>Sensitivity</span></div>
+        <div class="stat"><b>68</b><span>Viewmodel FOV</span></div>
+        <div class="stat"><b>150</b><span>Max Ping</span></div>
+        <div class="stat"><b>STYLE 4</b><span>Crosshair</span></div>
+    </section>
 
-        <div class="statusbar">
-            <span><span class="accentdot"></span>autoexec.cfg</span>
-            <span id="lineCount">0 lines</span>
-        </div>
+    <div class="chips">
+        <div class="chip"><small>Game</small><strong>Counter-Strike 2</strong></div>
+        <div class="chip"><small>Sensitivity</small><strong>2.3</strong></div>
+        <div class="chip"><small>Crosshair</small><strong>Style 4</strong></div>
     </div>
 
-</div>
+    <section class="section" id="commands">
+        <div class="section-head">
+            <div class="section-title">Console commands</div>
+            <button class="copy-all" id="copyAll">Copy all</button>
+        </div>
+        <div class="cmd-grid" id="cmdGrid"></div>
+        <div class="footnote" id="lineCount"></div>
+    </section>
+</main>
 
-<div id="toast">Copied to clipboard</div>
+<div class="toast" id="toast">Copied to clipboard</div>
 
 <script>
-    // ---- Config data: [type, ...fields] ----
-    // type: 'comment' | 'blank' | 'cvar'
-    const config = [
-        ['comment', '// sensitivity & mouse'],
-        ['cvar', 'sensitivity', '2.3', 'num'],
-        ['cvar', 'm_pitch', '0.022', 'num'],
-        ['cvar', 'm_yaw', '0.022', 'num'],
-        ['cvar', 'zoom_sensitivity_ratio', '1', 'num'],
-        ['blank'],
-        ['comment', '// crosshair'],
-        ['cvar', 'cl_crosshairstyle', '4', 'num'],
-        ['cvar', 'cl_crosshairsize', '1', 'num'],
-        ['cvar', 'cl_crosshairthickness', '1', 'num'],
-        ['cvar', 'cl_crosshairgap', '-4', 'num'],
-        ['cvar', 'cl_crosshairdot', 'false', 'bool'],
-        ['cvar', 'cl_crosshair_t', 'false', 'bool'],
-        ['cvar', 'cl_crosshairalpha', '255', 'num'],
-        ['cvar', 'cl_crosshaircolor', '4', 'num'],
-        ['cvar', 'cl_crosshaircolor_r', '255', 'num'],
-        ['cvar', 'cl_crosshaircolor_g', '255', 'num'],
-        ['cvar', 'cl_crosshaircolor_b', '255', 'num'],
-        ['cvar', 'cl_crosshair_drawoutline', 'false', 'bool'],
-        ['cvar', 'cl_crosshair_recoil', 'false', 'bool'],
-        ['cvar', 'cl_crosshairusealpha', 'true', 'bool'],
-        ['blank'],
-        ['comment', '// viewmodel'],
-        ['cvar', 'viewmodel_fov', '68', 'num'],
-        ['cvar', 'viewmodel_offset_x', '2.5', 'num'],
-        ['cvar', 'viewmodel_offset_y', '0', 'num'],
-        ['cvar', 'viewmodel_offset_z', '-1.5', 'num'],
-        ['cvar', 'viewmodel_presetpos', '3', 'num'],
-        ['blank'],
-        ['comment', '// hud & radar'],
-        ['cvar', 'hud_scaling', '1', 'num'],
-        ['cvar', 'cl_hud_color', '9', 'num'],
-        ['cvar', 'cl_hud_radar_scale', '0.91', 'num'],
-        ['cvar', 'cl_radar_scale', '0.4', 'num'],
-        ['cvar', 'cl_radar_always_centered', 'true', 'bool'],
-        ['cvar', 'cl_radar_rotate', 'true', 'bool'],
-        ['cvar', 'cl_showfps', '1', 'num'],
-        ['cvar', 'cl_showloadout', 'true', 'bool'],
-        ['blank'],
-        ['comment', '// audio'],
-        ['cvar', 'volume', '0.5', 'num'],
-        ['cvar', 'snd_mixahead', '0.001', 'num'],
-        ['cvar', 'snd_mute_losefocus', 'true', 'bool'],
-        ['cvar', 'snd_headphone_eq', '0', 'num'],
-        ['cvar', 'snd_spatialize_lerp', '0', 'num'],
-        ['blank'],
-        ['comment', '// buy menu'],
-        ['cvar', 'cl_buymenu_ct_nextround_high', '5000', 'num'],
-        ['cvar', 'cl_buymenu_ct_nextround_low', '1400', 'num'],
-        ['cvar', 'cl_buymenu_t_nextround_high', '5000', 'num'],
-        ['cvar', 'cl_buymenu_t_nextround_low', '1400', 'num'],
-        ['blank'],
-        ['comment', '// misc'],
-        ['cvar', 'cl_prefer_lefthanded', 'false', 'bool'],
-        ['cvar', 'cl_color', '1', 'num'],
-        ['cvar', 'mm_dedicated_search_maxping', '150', 'num'],
-        ['cvar', 'con_enable', 'true', 'bool'],
-        ['cvar', 'cl_use_opens_buy_menu', 'false', 'bool'],
-        ['cvar', 'cl_teammate_colors_show', '1', 'num'],
+    const groups=[
+        {label:'Sensitivity & mouse',items:[['sensitivity','2.3'],['m_pitch','0.022'],['m_yaw','0.022'],['zoom_sensitivity_ratio','1']]},
+        {label:'Crosshair',items:[['cl_crosshairstyle','4'],['cl_crosshairsize','1'],['cl_crosshairthickness','1'],['cl_crosshairgap','-4'],['cl_crosshairdot','false'],['cl_crosshair_t','false'],['cl_crosshairalpha','255'],['cl_crosshaircolor','4'],['cl_crosshaircolor_r','255'],['cl_crosshaircolor_g','255'],['cl_crosshaircolor_b','255'],['cl_crosshair_drawoutline','false'],['cl_crosshair_recoil','false'],['cl_crosshairusealpha','true']]},
+        {label:'Viewmodel',items:[['viewmodel_fov','68'],['viewmodel_offset_x','2.5'],['viewmodel_offset_y','0'],['viewmodel_offset_z','-1.5'],['viewmodel_presetpos','3']]},
+        {label:'HUD & radar',items:[['hud_scaling','1'],['cl_hud_color','9'],['cl_hud_radar_scale','0.91'],['cl_radar_scale','0.4'],['cl_radar_always_centered','true'],['cl_radar_rotate','true'],['cl_showfps','1'],['cl_showloadout','true']]},
+        {label:'Audio',items:[['volume','0.5'],['snd_mixahead','0.001'],['snd_mute_losefocus','true'],['snd_headphone_eq','0'],['snd_spatialize_lerp','0']]},
+        {label:'Buy menu',items:[['cl_buymenu_ct_nextround_high','5000'],['cl_buymenu_ct_nextround_low','1400'],['cl_buymenu_t_nextround_high','5000'],['cl_buymenu_t_nextround_low','1400']]},
+        {label:'Misc',items:[['cl_prefer_lefthanded','false'],['cl_color','1'],['mm_dedicated_search_maxping','150'],['con_enable','true'],['cl_use_opens_buy_menu','false'],['cl_teammate_colors_show','1']]}
     ];
 
-    function escapeHtml(s){
-        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-
-    function buildLine(row, idx){
-        if(row[0] === 'blank'){
-            return {html: '&nbsp;', copy: null};
-        }
-        if(row[0] === 'comment'){
-            return {html: `<span class="cmt-head">${escapeHtml(row[1])}</span>`, copy: null};
-        }
-        // cvar
-        const [, name, val, kind] = row;
-        let valSpan;
-        if(kind === 'bool'){
-            valSpan = `<span class="${val==='true' ? 'val-true' : 'val-false'}">${val}</span>`;
-        } else {
-            valSpan = `<span class="val-num">${val}</span>`;
-        }
-        const copyText = `${name} "${val}"`;
-        const html = `<span class="cvar">${name}</span> <span class="quote">"</span>${valSpan}<span class="quote">"</span>`;
-        return {html, copy: copyText};
-    }
-
-    const codeEl = document.getElementById('code');
-    const gutter = document.createElement('div');
-    gutter.className = 'gutter-col';
-    const linesCol = document.createElement('div');
-    linesCol.className = 'lines-col';
-
-    let visibleLine = 0;
-    config.forEach((row, i) => {
-        visibleLine++;
-        const g = document.createElement('div');
-        g.textContent = visibleLine;
-        gutter.appendChild(g);
-
-        const {html, copy} = buildLine(row, i);
-        const lineDiv = document.createElement('div');
-        lineDiv.className = 'line' + (copy ? ' hoverable' : (row[0]==='blank' ? ' blank' : ''));
-        lineDiv.innerHTML = html;
-
-        if(copy){
-            const btnId = 'ln' + i;
-            const btn = document.createElement('button');
-            btn.className = 'copy-line-btn';
-            btn.id = btnId;
-            btn.textContent = 'copy';
-            btn.onclick = () => copy_(copy, btnId);
-            lineDiv.appendChild(btn);
-        }
-        linesCol.appendChild(lineDiv);
+    const grid=document.getElementById('cmdGrid');
+    let total=0;
+    groups.forEach(group=>{
+        const card=document.createElement('article');
+        card.className='cmd-card';
+        const head=document.createElement('div');
+        head.className='cmd-head';
+        head.innerHTML=`<span class="swatch"></span><span class="cmd-title">${group.label}</span>`;
+        card.appendChild(head);
+        group.items.forEach(([name,val])=>{
+            total++;
+            const row=document.createElement('div');
+            row.className='cmd-row';
+            const cmd=document.createElement('div');
+            cmd.className='cmd';
+            cmd.innerHTML=`<span class="cmd-name">${name}</span><span class="cmd-val">"${val}"</span>`;
+            const btn=document.createElement('button');
+            btn.className='cmd-copy';
+            btn.textContent='Copy';
+            btn.onclick=()=>copyCommand(`${name} "${val}"`,btn);
+            row.append(cmd,btn);
+            card.appendChild(row);
+        });
+        grid.appendChild(card);
     });
+    document.getElementById('lineCount').textContent=`${total} commands · click any row to copy`;
 
-    codeEl.appendChild(gutter);
-    codeEl.appendChild(linesCol);
-    document.getElementById('lineCount').textContent = visibleLine + ' lines';
-
-    // ---- Clipboard helpers ----
-    const toast = document.getElementById('toast');
-    let toastTimer;
+    const toast=document.getElementById('toast');
+    let timer;
     function showToast(msg){
-        toast.textContent = msg || 'Copied to clipboard';
-        clearTimeout(toastTimer);
-        toast.classList.add('show');
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+        toast.textContent=msg||'Copied to clipboard';
+        clearTimeout(timer);toast.classList.add('show');
+        timer=setTimeout(()=>toast.classList.remove('show'),1500);
     }
-
-    function fallbackCopy(text){
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
-        document.body.appendChild(ta);
-        ta.focus(); ta.select();
-        try{ document.execCommand('copy'); } catch(e){ console.warn('Copy failed', e); }
-        document.body.removeChild(ta);
+    function fallbackCopy(value){
+        const ta=document.createElement('textarea');
+        ta.value=value;ta.style.cssText='position:fixed;left:-9999px;top:-9999px';
+        document.body.appendChild(ta);ta.select();
+        try{document.execCommand('copy')}catch(e){}
+        ta.remove();
     }
-
-    function copy_(text, btnId){
-        const btn = document.getElementById(btnId);
-        const onDone = () => {
-            if(btn){
-                const orig = btn.textContent;
-                btn.textContent = '✓';
-                btn.classList.add('done');
-                setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 1400);
-            }
-            showToast();
-        };
-        if(navigator.clipboard && window.isSecureContext){
-            navigator.clipboard.writeText(text).then(onDone).catch(() => { fallbackCopy(text); onDone(); });
-        } else {
-            fallbackCopy(text); onDone();
-        }
+    function copyText(value,done){
+        if(navigator.clipboard&&window.isSecureContext){
+            navigator.clipboard.writeText(value).then(done).catch(()=>{fallbackCopy(value);done()});
+        }else{fallbackCopy(value);done()}
     }
-
-    function copyAllCmds(){
-        const cmds = config
-            .filter(r => r[0] === 'cvar')
-            .map(r => `${r[1]} "${r[2]}"`)
-            .join('; ');
-        const btn = document.getElementById('copyAll');
-        const onDone = () => {
-            const orig = btn.textContent;
-            btn.textContent = 'Copied ✓';
-            btn.classList.add('done');
-            setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 1600);
-            showToast('All commands copied');
-        };
-        if(navigator.clipboard && window.isSecureContext){
-            navigator.clipboard.writeText(cmds).then(onDone).catch(() => { fallbackCopy(cmds); onDone(); });
-        } else {
-            fallbackCopy(cmds); onDone();
-        }
+    function copyCommand(value,btn){
+        const old=btn.textContent;
+        copyText(value,()=>{
+            btn.textContent='Copied';btn.classList.add('done');showToast();
+            setTimeout(()=>{btn.textContent=old;btn.classList.remove('done')},1200);
+        });
     }
+    document.getElementById('copyAll').onclick=()=>{
+        const all=groups.flatMap(g=>g.items).map(([n,v])=>`${n} "${v}"`).join('; ');
+        const btn=document.getElementById('copyAll');
+        copyText(all,()=>{
+            btn.textContent='Copied!';
+            btn.classList.add('done');showToast('All commands copied');
+            setTimeout(()=>{btn.textContent='Copy all';btn.classList.remove('done')},1300);
+        });
+    };
 </script>
 </body>
 </html>
