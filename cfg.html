@@ -192,46 +192,6 @@
         }
         .btn.trade:hover{background:#dfe4e9}
         .icon{width:16px;height:16px;fill:currentColor;flex:0 0 16px}
-        .stats{
-            display:grid;
-            grid-template-columns:repeat(4,1fr);
-            margin-top:14px;
-            border:1px solid var(--line);
-            border-radius:6px;
-            overflow:hidden;
-            background:rgba(13,20,32,.85);
-        }
-        .stat{
-            min-width:0;padding:14px 17px;
-            border-right:1px solid var(--line);
-        }
-        .stat:last-child{border-right:0}
-        .stat b{display:block;font:700 17px var(--mono);white-space:nowrap}
-        .stat span{
-            display:block;margin-top:4px;
-            color:var(--dim);font:600 9px var(--mono);
-            text-transform:uppercase;letter-spacing:1px;
-        }
-        .chips{
-            display:flex;gap:9px;flex-wrap:wrap;
-            margin-top:12px;
-        }
-        .chip{
-            flex:0 1 auto;
-            min-width:125px;
-            padding:9px 12px;
-            border:1px solid var(--line);
-            border-radius:5px;
-            background:#0c131e;
-        }
-        .chip small{
-            display:block;color:var(--dim);
-            font:600 8px var(--mono);text-transform:uppercase;letter-spacing:.8px;
-        }
-        .chip strong{
-            display:block;margin-top:3px;
-            font:600 12px var(--mono);color:#e7edf3;
-        }
         .section{
             margin-top:27px;
         }
@@ -333,10 +293,6 @@
             .actions{margin-top:15px;gap:7px}
             .btn{min-height:34px;padding:0 10px;font-size:9px}
             .icon{width:14px;height:14px;flex-basis:14px}
-            .stats{grid-template-columns:repeat(2,1fr)}
-            .stat:nth-child(2){border-right:0}
-            .stat:nth-child(-n+2){border-bottom:1px solid var(--line)}
-            .stat{padding:12px}
             .cmd-grid{grid-template-columns:1fr}
         }
         @media(max-width:480px){
@@ -355,14 +311,6 @@
             .actions{margin-top:11px;gap:5px}
             .btn{min-height:31px;padding:0 8px;font-size:8px;gap:5px}
             .icon{width:13px;height:13px;flex-basis:13px}
-            .stats{margin-top:10px}
-            .stat{padding:10px}
-            .stat b{font-size:14px}
-            .stat span{font-size:7px}
-            .chips{margin-top:8px}
-            .chip{min-width:0;flex:1;padding:8px 9px}
-            .chip small{font-size:7px}
-            .chip strong{font-size:10px}
             .section{margin-top:21px}
             .section-title{font-size:18px}
             .copy-all{padding:7px 9px;font-size:8px}
@@ -411,18 +359,6 @@
             </div>
         </div>
     </section>
-
-    <section class="stats" id="config">
-        <div class="stat"><b>2.30</b><span>Sensitivity</span></div>
-        <div class="stat"><b>68</b><span>Viewmodel FOV</span></div>
-        <div class="stat"><b>150</b><span>Max Ping</span></div>
-        <div class="stat"><b>STYLE 4</b><span>Crosshair</span></div>
-    </section>
-
-    <div class="chips">
-        <div class="chip"><small>Game</small><strong>Counter-Strike 2</strong></div>
-        <div class="chip"><small>Sensitivity</small><strong>2.3</strong></div>
-        <div class="chip"><small>Crosshair</small><strong>Style 4</strong></div>
     </div>
 
     <section class="section" id="commands">
