@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Для Светы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Cormorant+SC:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f6efe4;
+    --paper:#fbf6ec;
+    --paper2:#f3ead9;
+    --ink:#3a2e28;
+    --wine:#7a2e35;
+    --wine-dark:#4e1c22;
+    --wine-deep:#36141a;
+    --gold:#c3a06a;
+    --gold-soft:#e9c98f;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  :root:not([data-theme="light"]){ color-scheme: dark; }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{
+    margin:0;
+    min-height:100%;
+    background:
+      radial-gradient(circle at 18% 8%, #8e3b45 0%, transparent 42%),
+      radial-gradient(circle at 88% 92%, #45181e 0%, transparent 48%),
+      radial-gradient(circle at 50% 50%, var(--wine-dark) 0%, var(--wine-deep) 100%);
+    font-family:'Cormorant Garamond', serif;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow-x:hidden;
+    padding:24px;
+  }
+
+  /* soft drifting glow for atmosphere */
+  .ambient{
+    position:fixed; inset:0;
+    pointer-events:none;
+    background:
+      radial-gradient(1px 1px at 20% 30%, rgba(233,201,143,.5), transparent),
+      radial-gradient(1px 1px at 70% 60%, rgba(233,201,143,.35), transparent),
+      radial-gradient(1.5px 1.5px at 85% 20%, rgba(233,201,143,.4), transparent),
+      radial-gradient(1px 1px at 40% 80%, rgba(233,201,143,.3), transparent),
+      radial-gradient(1.5px 1.5px at 60% 15%, rgba(233,201,143,.4), transparent);
+    animation: drift 14s ease-in-out infinite alternate;
+    opacity:.8;
+  }
+  @keyframes drift{
+    from{ transform:translateY(0px); }
+    to{ transform:translateY(-14px); }
+  }
+
+  .stage{
+    position:relative;
+    width:100%;
+    max-width:460px;
+    perspective:2000px;
+  }
+
+  /* ---------- ENVELOPE ---------- */
+  .envelope{
+    position:relative;
+    width:100%;
+    aspect-ratio:3/2;
+    cursor:pointer;
+    transition:transform .6s cubic-bezier(.22,.9,.3,1), opacity .6s ease;
+  }
+  .envelope:hover{ transform:translateY(-3px); }
+  .envelope:hover .flap{ filter:brightness(1.04); }
+  .envelope:hover .seal{ transform:translate(-50%,-50%) scale(1.04); }
+
+  .envelope .hint{
+    position:absolute;
+    bottom:-2.7em;
+    left:0; right:0;
+    text-align:center;
+    color:var(--gold-soft);
+    opacity:.8;
+    font-size:1.02rem;
+    letter-spacing:.06em;
+    font-style:italic;
+  }
+
+  .body-env{
+    position:absolute; inset:0;
+    background:var(--cream);
+    border-radius:7px;
+    box-shadow:
+      0 24px 48px rgba(0,0,0,.4),
+      0 2px 0 rgba(255,255,255,.06) inset;
+    overflow:hidden;
+  }
+  .body-env::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      linear-gradient(135deg, transparent 49.5%, rgba(0,0,0,.055) 50%, transparent 50.5%),
+      linear-gradient(-135deg, transparent 49.5%, rgba(0,0,0,.055) 50%, transparent 50.5%);
+  }
+
+  .flap{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:62%;
+    background:linear-gradient(160deg, #f1e6d2, #e4d3b5);
+    clip-path:polygon(0 0, 100% 0, 50% 100%);
+    transform-origin:top center;
+    transition:transform .85s cubic-bezier(.6,0,.2,1);
+    z-index:3;
+    box-shadow:0 2px 6px rgba(0,0,0,.14) inset;
+  }
+
+  .seal{
+    position:absolute;
+    top:42%; left:50%;
+    transform:translate(-50%,-50%);
+    width:56px; height:56px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ab414c, var(--wine) 68%, var(--wine-dark));
+    box-shadow:0 4px 10px rgba(0,0,0,.45);
+    display:flex; align-items:center; justify-content:center;
+    z-index:4;
+    transition:opacity .4s ease, transform .5s cubic-bezier(.22,.9,.3,1);
+  }
+  .seal span{
+    font-family:'Great Vibes', cursive;
+    color:var(--gold-soft);
+    font-size:1.65rem;
+    line-height:1;
+  }
+
+  .letter-peek{
+    position:absolute;
+    left:6%; right:6%;
+    bottom:-2%;
+    height:58%;
+    background:var(--paper);
+    border-radius:3px 3px 0 0;
+    box-shadow:0 -2px 6px rgba(0,0,0,.08);
+    z-index:2;
+  }
+
+  .envelope.open .flap{ transform:rotateX(180deg); }
+  .envelope.open .seal{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.5);
+  }
+  .envelope.open{
+    opacity:0;
+    pointer-events:none;
+    transform:scale(.94);
+    transition:transform .7s cubic-bezier(.4,0,.2,1), opacity .7s ease .1s;
+  }
+
+  /* ---------- LETTER ---------- */
+  .letter-wrap{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 18px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .6s ease .1s;
+    z-index:10;
+  }
+  .letter-wrap.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .letter{
+    position:relative;
+    width:100%;
+    max-width:560px;
+    max-height:88vh;
+    overflow-y:auto;
+    background:
+      linear-gradient(180deg, rgba(122,46,53,.035), transparent 12%),
+      var(--paper);
+    border-radius:5px;
+    box-shadow:
+      0 36px 70px rgba(0,0,0,.5),
+      0 0 0 1px rgba(195,160,106,.15);
+    padding:50px 44px 42px;
+    transform:translateY(30px) scale(.96);
+    transition:transform .7s cubic-bezier(.16,.9,.2,1);
+  }
+  .letter-wrap.show .letter{
+    transform:translateY(0) scale(1);
+  }
+  .letter::-webkit-scrollbar{width:8px;}
+  .letter::-webkit-scrollbar-thumb{background:#dccba9; border-radius:4px;}
+
+  .letter .mark{
+    text-align:center;
+    font-family:'Great Vibes', cursive;
+    color:var(--wine);
+    font-size:1.7rem;
+    margin-bottom:.1em;
+    letter-spacing:.02em;
+  }
+  .letter .date{
+    text-align:center;
+    font-family:'Cormorant SC', serif;
+    font-size:.88rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:#9c8a76;
+    margin-bottom:1.8em;
+  }
+  .letter .salutation{
+    font-family:'Great Vibes', cursive;
+    font-size:2.3rem;
+    font-weight:400;
+    color:var(--wine-dark);
+    margin-bottom:.6em;
+    letter-spacing:.01em;
+  }
+  .letter p{
+    font-size:1.2rem;
+    line-height:1.82;
+    margin:0 0 1.15em;
+    letter-spacing:.01em;
+  }
+  .letter p:first-of-type::first-letter{
+    font-family:'Cormorant SC', serif;
+    font-size:2.6rem;
+    line-height:.75;
+    float:left;
+    padding:.08em .08em 0 0;
+    color:var(--wine);
+  }
+  .letter .signoff{
+    margin-top:1.7em;
+    font-size:1.2rem;
+    font-style:italic;
+    color:#5c4c3f;
+  }
+  .letter .signature{
+    font-family:'Great Vibes', cursive;
+    color:var(--wine);
+    font-size:2.4rem;
+    margin-top:.25em;
+  }
+
+  .close-btn{
+    position:absolute;
+    top:8px; right:12px;
+    background:none;
+    border:none;
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.9rem;
+    line-height:1;
+    color:#b3a186;
+    cursor:pointer;
+    padding:8px 12px;
+    transition:color .25s ease, transform .25s ease;
+  }
+  .close-btn:hover{ color:var(--wine); transform:rotate(90deg); }
+  .close-btn:focus-visible, .envelope:focus-visible .body-env{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+  }
+
+  @media (max-width:420px){
+    .letter{ padding:42px 26px 32px; }
+    .letter .salutation{ font-size:1.9rem; }
+    .letter p, .letter .signoff{ font-size:1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="stage">
+  <div class="envelope" id="envelope" tabindex="0" role="button" aria-label="Открыть письмо">
+    <div class="body-env">
+      <div class="letter-peek"></div>
+      <div class="flap"></div>
+      <div class="seal"><span>S</span></div>
+    </div>
+    <div class="hint">нажмите на печать, чтобы открыть</div>
+  </div>
+</div>
+
+<div class="letter-wrap" id="letterWrap">
+  <div class="letter">
+    <button class="close-btn" id="closeBtn" aria-label="Закрыть письмо">&times;</button>
+    <div class="mark">&#10084;</div>
+    <div class="date">Написано в тишине</div>
+    <div class="salutation">Дорогая Света,</div>
+
+    <p>Я переписывал это письмо несколько раз, пытаясь подобрать точные слова, но в итоге решил просто написать искренне и прямо.</p>
+
+    <p>Мы еще не виделись лично, но с тех пор, как я увидел твою фотографию, мои мысли снова и снова возвращаются к тебе. В твоем взгляде и улыбке есть что-то невероятно притягательное, светлое и особенное — то, что заставляет остановиться и забыть обо всем остальном.</p>
+
+    <p>Фотография — это лишь мгновение, но мне бы очень хотелось узнать человека за этой невероятной улыбкой: услышать твой голос, узнать, о чем ты мечтаешь и что заставляет тебя искренне радоваться.</p>
+
+    <p>Надеюсь, это маленькое послание подарит тебе хотя бы одну тёплую улыбку. Буду очень рад, если однажды мы сможем выпить вместе по чашке кофе и продолжить этот разговор уже вживую.</p>
+
+    <p class="signoff">С наилучшими пожеланиями,</p>
+    <div class="signature">Санжар</div>
+  </div>
+</div>
+
+<script>
+  const envelope = document.getElementById('envelope');
+  const letterWrap = document.getElementById('letterWrap');
+  const closeBtn = document.getElementById('closeBtn');
+
+  function openLetter(){
+    envelope.classList.add('open');
+    setTimeout(()=>{ letterWrap.classList.add('show'); }, 620);
+  }
+  function closeLetter(){
+    letterWrap.classList.remove('show');
+    setTimeout(()=>{ envelope.classList.remove('open'); }, 350);
+  }
+
+  envelope.addEventListener('click', openLetter);
+  envelope.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openLetter(); }
+  });
+  closeBtn.addEventListener('click', closeLetter);
+  letterWrap.addEventListener('click', (e)=>{
+    if(e.target === letterWrap) closeLetter();
+  });
+</script>
+
+</body>
+</html>
