@@ -24,6 +24,42 @@
             overflow: hidden;
         }
 
+        /* Header */
+        .header {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            z-index: 10;
+        }
+
+        .telegram-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            background: rgba(38, 133, 255, 0.15);
+            border: 1px solid rgba(121, 181, 255, 0.3);
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .telegram-btn:hover {
+            background: #2685ff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(38, 133, 255, 0.35);
+        }
+
+        .telegram-btn svg {
+            width: 21px;
+            height: 21px;
+            fill: currentColor;
+        }
+
         .container {
             text-align: center;
             padding: 40px 20px;
@@ -111,6 +147,16 @@
         }
 
         @media (max-width: 600px) {
+            .header {
+                top: 18px;
+                right: 18px;
+            }
+
+            .telegram-btn {
+                padding: 10px 14px;
+                font-size: 12px;
+            }
+
             .logo {
                 width: 90px;
                 height: 90px;
@@ -128,6 +174,21 @@
 </head>
 
 <body>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="https://t.me/iut_chat"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="telegram-btn">
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22 2L2.5 9.5c-1.3.5-1.3 1.4-.2 1.7l5 1.6 1.9 6c.2.7.1 1 .8 1 .5 0 .8-.2 1.1-.5l2.8-2.7 5.8 4.2c1.1.6 1.9.3 2.2-1L24 3.7C24.3 2.1 23.4 1.4 22 2zM9.1 12.4l10.9-6.9c.5-.3.9-.1.5.2l-9 8.1-.4 4.1-2-5.5z"/>
+            </svg>
+
+            Telegram
+        </a>
+    </header>
 
     <div class="glow one"></div>
     <div class="glow two"></div>
