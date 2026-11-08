@@ -1,0 +1,740 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IUT | Class Timetable</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #07152e;
+    --bg-light: #102d59;
+    --primary: #2685ff;
+    --primary-light: #79b5ff;
+    --border: rgba(130, 175, 230, 0.17);
+    --text: #ffffff;
+    --muted: #a9bfdc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #07152e, #102d59, #174b83);
+    color: var(--text);
+    padding: 25px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Background effects */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    filter: blur(140px);
+    opacity: 0.18;
+    z-index: -1;
+    pointer-events: none;
+}
+
+body::before {
+    background: #2685ff;
+    top: -200px;
+    left: -150px;
+}
+
+body::after {
+    background: #174bff;
+    bottom: -200px;
+    right: -150px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin: 0 auto 38px;
+}
+
+.header h1 {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+}
+
+.header h1 span {
+    color: #79b5ff;
+}
+
+.header-icon {
+    display: inline-block;
+    font-size: 40px;
+    color: #79b5ff;
+    margin-right: 12px;
+    vertical-align: middle;
+}
+
+.header p {
+    color: var(--muted);
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+.header-line {
+    display: inline-block;
+    width: 65px;
+    height: 1px;
+    background: #6799d5;
+    vertical-align: middle;
+    margin: 0 12px;
+}
+
+/* Timetable layout */
+.timetable-wrapper {
+    max-width: 1750px;
+    margin: auto;
+    overflow-x: auto;
+    padding-bottom: 15px;
+}
+
+.timetable {
+    display: grid;
+    grid-template-columns: 105px repeat(6, minmax(0, 1fr));
+    gap: 12px;
+    min-width: 1150px;
+}
+
+/* Time column */
+.time-column {
+    margin-top: 20px;
+    height: 610px;
+    background: rgba(8, 23, 49, 0.85);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+}
+
+.time-title {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    color: var(--primary-light);
+    border-bottom: 1px solid var(--border);
+}
+
+.time-slots {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    height: 560px;
+}
+
+.time {
+    text-align: center;
+    padding-top: 18px;
+    font-size: 16px;
+    border-bottom: 1px solid rgba(130, 175, 230, 0.1);
+}
+
+/* Day columns */
+.day {
+    height: 610px;
+    background: rgba(8, 23, 49, 0.82);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+}
+
+.day:hover {
+    border-color: rgba(121, 181, 255, 0.5);
+}
+
+.day-header {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    background: rgba(38, 91, 155, 0.15);
+    border-bottom: 1px solid var(--border);
+}
+
+.day-header span {
+    color: var(--primary-light);
+    font-size: 23px;
+}
+
+.day-body {
+    height: 540px;
+    position: relative;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 81px,
+        rgba(130, 175, 230, 0.09) 81px,
+        rgba(130, 175, 230, 0.09) 82px
+    );
+}
+
+/* Class cards */
+.class-card {
+    position: absolute;
+    left: 7px;
+    right: 7px;
+    padding: 12px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid;
+    overflow: hidden;
+    transition: transform 0.25s, filter 0.25s;
+}
+
+.class-card:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.2);
+}
+
+.main {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.class-icon {
+    min-width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    font-size: 23px;
+}
+
+.class-info {
+    min-width: 0;
+}
+
+.class-time {
+    font-size: 13px;
+    color: #c4d7ee;
+    margin-bottom: 7px;
+}
+
+.class-name {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #d0e0f3;
+    white-space: nowrap;
+}
+
+.details span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Subject colors */
+.english {
+    background: linear-gradient(135deg, #263c55, #101d35);
+    border-color: #6484ad;
+    box-shadow: inset 4px 0 #79b5ff;
+}
+
+.math {
+    background: linear-gradient(135deg, #1c3e71, #101d3c);
+    border-color: #386ab1;
+    box-shadow: inset 4px 0 #579dff;
+}
+
+.os {
+    background: linear-gradient(135deg, #10425a, #10213b);
+    border-color: #087b9d;
+    box-shadow: inset 4px 0 #00cce8;
+}
+
+.programming {
+    background: linear-gradient(135deg, #30306c, #171c43);
+    border-color: #6264c6;
+    box-shadow: inset 4px 0 #8185ff;
+}
+
+/* Desktop positions */
+.monday .english {
+    top: 252px;
+    height: 117px;
+}
+
+.monday .math {
+    top: 369px;
+    height: 117px;
+}
+
+.tuesday .english {
+    top: 211px;
+    height: 117px;
+}
+
+.tuesday .os {
+    top: 375px;
+    height: 147px;
+}
+
+.wednesday .os {
+    top: 38px;
+    height: 147px;
+}
+
+.wednesday .programming {
+    top: 206px;
+    height: 147px;
+}
+
+.wednesday .math {
+    top: 374px;
+    height: 117px;
+}
+
+.thursday .os {
+    top: 172px;
+    height: 147px;
+}
+
+.friday .programming {
+    top: 130px;
+    height: 147px;
+}
+
+/* Saturday */
+.no-classes {
+    position: absolute;
+    top: 38px;
+    left: 8%;
+    right: 8%;
+    height: 127px;
+    border: 1px dashed #5075a4;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #a9bfdc;
+    font-size: 16px;
+    background: rgba(38, 91, 155, 0.1);
+}
+
+.no-classes span {
+    font-size: 27px;
+    color: var(--primary-light);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    color: #9bb6d5;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-top: 30px;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+    body {
+        padding: 20px;
+    }
+
+    .timetable {
+        min-width: 1050px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+    body {
+        padding: 20px 14px;
+    }
+
+    .header {
+        margin-bottom: 28px;
+    }
+
+    .header h1 {
+        font-size: 29px;
+        letter-spacing: -1px;
+    }
+
+    .header-icon {
+        font-size: 27px;
+        margin-right: 5px;
+    }
+
+    .header p {
+        font-size: 13px;
+    }
+
+    .header-line {
+        width: 35px;
+        margin: 0 7px;
+    }
+
+    /* Change desktop grid into mobile list */
+    .timetable-wrapper {
+        overflow: visible;
+        padding: 0;
+    }
+
+    .timetable {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    /* Hide separate time column */
+    .time-column {
+        display: none;
+    }
+
+    .day {
+        height: auto;
+        min-height: 0;
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+    .day-header {
+        height: 58px;
+        justify-content: flex-start;
+        padding: 0 18px;
+        font-size: 17px;
+    }
+
+    .day-header span {
+        font-size: 22px;
+    }
+
+    /* Cards become normal flow elements */
+    .day-body {
+        height: auto;
+        min-height: 0;
+        padding: 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: none;
+    }
+
+    .class-card {
+        position: relative !important;
+        top: auto !important;
+        left: auto;
+        right: auto;
+        width: 100%;
+        height: auto !important;
+        min-height: 112px;
+        padding: 15px;
+        gap: 17px;
+        border-radius: 14px;
+    }
+
+    .class-icon {
+        min-width: 45px;
+        height: 45px;
+        font-size: 24px;
+    }
+
+    .class-time {
+        font-size: 13px;
+    }
+
+    .class-name {
+        font-size: 16px;
+    }
+
+    .details {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 12px;
+    }
+
+    .no-classes {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        height: 110px;
+        width: 100%;
+    }
+
+    .footer {
+        margin-top: 25px;
+        font-size: 10px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+    body {
+        padding: 15px 10px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .class-card {
+        padding: 12px;
+    }
+
+    .details {
+        font-size: 11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>
+        <span class="header-icon">▦</span>
+        Class <span>Timetable</span>
+    </h1>
+
+    <p>
+        <span class="header-line"></span>
+        Weekly Schedule
+        <span class="header-line"></span>
+    </p>
+</header>
+
+<div class="timetable-wrapper">
+<div class="timetable">
+
+    <!-- TIME COLUMN -->
+    <div class="time-column">
+        <div class="time-title">◷</div>
+        <div class="time-slots">
+            <div class="time">12:00</div>
+            <div class="time">13:00</div>
+            <div class="time">14:00</div>
+            <div class="time">15:00</div>
+            <div class="time">16:00</div>
+            <div class="time">17:00</div>
+        </div>
+    </div>
+
+    <!-- MONDAY -->
+    <div class="day monday">
+        <div class="day-header"><span>▣</span> Monday</div>
+        <div class="day-body">
+
+            <div class="class-card english">
+                <div class="main">
+                    <div class="class-icon">▤</div>
+                    <div class="class-info">
+                        <div class="class-time">15:00 – 16:30</div>
+                        <div class="class-name">English</div>
+                    </div>
+                </div>
+                <div class="details">
+                    <span>⌖ B203</span>
+                    <span>♙ S. Konesbaev</span>
+                </div>
+            </div>
+
+            <div class="class-card math">
+                <div class="main">
+                    <div class="class-icon">π</div>
+                    <div class="class-info">
+                        <div class="class-time">16:30 – 18:00</div>
+                        <div class="class-name">Mathematics</div>
+                    </div>
+                </div>
+                <div class="details">
+                    <span>⌖ B202</span>
+                    <span>♙ U. Safarov</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TUESDAY -->
+    <div class="day tuesday">
+        <div class="day-header"><span>▣</span> Tuesday</div>
+        <div class="day-body">
+
+            <div class="class-card programming">
+                <div class="main">
+                    <div class="class-icon">▤</div>
+                    <div class="class-info">
+                        <div class="class-time">14:30 – 16:00</div>
+                        <div class="class-name">English</div>
+                    </div>
+                </div>
+                <div class="details">
+                    <span>⌖ B203</span>
+                    <span>♙ S. Konesbaev</span>
+                </div>
+            </div>
+
+            <div class="class-card os">
+                <div class="main">
+                    <div class="class-icon">▣</div>
+                    <div class="class-info">
+                        <div class="class-time">16:30 – 18:30</div>
+                        <div class="class-name">Operating System</div>
+                    </div>
+                </div>
+                <div class="details">
+                    <span>⌖ B201</span>
+                    <span>♙ A. Nurullaev</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- WEDNESDAY -->
+    <div class="day wednesday">
+        <div class="day-header"><span>▣</span> Wednesday</div>
+        <div class="day-body">
+
+            <div class="class-card os">
+                <div class="main">
+                    <div class="class-icon">▣</div>
+                    <div class="class-info">
+                        <div class="class-time">12:30 – 14:30</div>
+                        <div class="class-name">Operating System</div>
+                    </div>
+                </div>
+                <div class="details">
+                    <span>⌖ B210</span>
+                    <span>♙ A. Nurullaev</span>
+                </div>
+            </div>
+
+            <div class="class-card programming">
+                <div class="main">
+                    <div class="class-icon">&lt;/&gt;</div>
+                    <div class="class-info">
+                        <div class="class-time">14:30 – 16:30</div>
+                        <div class="class-name">Programming Concepts and...</div>
+                    </div>
+                </div>
+                <div class="details">
+                    <span>⌖ B202</span>
+                    <span>♙ A. Seth</span>
+                </div>
+            </div>
+
+            <div class="class-card math">
+                <div class="main">
+                    <div class="class-icon">π</div>
+                    <div class="class-info">
+                        <div class="class-time">16:30 – 18:00</div>
+                        <div class="class-name">Mathematics</div>
+                    </div>
+                </div>
+                <div class="details">
+                    <span>⌖ B202</span>
+                    <span>♙ U. Safarov</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- THURSDAY -->
+    <div class="day thursday">
+        <div class="day-header"><span>▣</span> Thursday</div>
+        <div class="day-body">
+
+            <div class="class-card os">
+                <div class="main">
+                    <div class="class-icon">▣</div>
+                    <div class="class-info">
+                        <div class="class-time">14:00 – 16:00</div>
+                        <div class="class-name">Operating System</div>
+                    </div>
+                </div>
+                <div class="details">
+                    <span>⌖ A203</span>
+                    <span>♙ A. Nurullaev</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FRIDAY -->
+    <div class="day friday">
+        <div class="day-header"><span>▣</span> Friday</div>
+        <div class="day-body">
+
+            <div class="class-card programming">
+                <div class="main">
+                    <div class="class-icon">&lt;/&gt;</div>
+                    <div class="class-info">
+                        <div class="class-time">13:30 – 15:30</div>
+                        <div class="class-name">Programming Concepts and...</div>
+                    </div>
+                </div>
+                <div class="details">
+                    <span>⌖ A514 PC Lab</span>
+                    <span>♙ A. Seth</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SATURDAY -->
+    <div class="day saturday">
+        <div class="day-header"><span>▣</span> Saturday</div>
+        <div class="day-body">
+            <div class="no-classes">
+                <span>▣</span>
+                No classes
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<footer class="footer">
+    INHA UNIVERSITY IN TASHKENT
+</footer>
+
+</body>
+</html>
