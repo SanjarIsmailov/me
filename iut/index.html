@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IUT | Inha University</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #07152e, #102d59, #174b83);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+            z-index: 1;
+        }
+
+        .logo {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 30px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: white;
+            padding: 10px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        h1 {
+            font-size: clamp(32px, 6vw, 64px);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 17px;
+            color: #b8c9df;
+            margin-bottom: 45px;
+        }
+
+        .timetable-btn {
+            display: inline-block;
+            padding: 17px 55px;
+            border-radius: 14px;
+            background: white;
+            color: #102d59;
+            text-decoration: none;
+            font-size: 17px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .timetable-btn:hover {
+            transform: translateY(-5px);
+            background: #dceaff;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 25px;
+            color: #91a8c5;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .glow {
+            position: fixed;
+            width: 350px;
+            height: 350px;
+            background: #2685ff;
+            filter: blur(150px);
+            opacity: 0.2;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .glow.one {
+            top: -100px;
+            left: -100px;
+        }
+
+        .glow.two {
+            bottom: -150px;
+            right: -100px;
+        }
+
+        @media (max-width: 600px) {
+            .logo {
+                width: 90px;
+                height: 90px;
+            }
+
+            .subtitle {
+                font-size: 15px;
+            }
+
+            .timetable-btn {
+                padding: 15px 45px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="glow one"></div>
+    <div class="glow two"></div>
+
+    <main class="container">
+
+        <div class="logo">
+            <img src="logo.jpg" alt="IUT Logo">
+        </div>
+
+        <h1>INHA UNIVERSITY</h1>
+
+        <p class="subtitle">
+            Welcome to Inha University in Tashkent
+        </p>
+
+        <a href="timetable.html" class="timetable-btn">
+            Timetable
+        </a>
+
+    </main>
+
+    <div class="footer">
+        INHA UNIVERSITY IN TASHKENT
+    </div>
+
+</body>
+</html>
