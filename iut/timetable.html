@@ -6,17 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IUT | Class Timetable</title>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+<style>
 :root {
     --bg: #07152e;
-    --bg-light: #102d59;
     --primary: #2685ff;
-    --primary-light: #79b5ff;
-    --border: rgba(130, 175, 230, 0.17);
+    --light-blue: #79b5ff;
     --text: #ffffff;
-    --muted: #a9bfdc;
+    --muted: #b8c9df;
+    --border: rgba(130, 175, 230, 0.17);
 }
 
 * {
@@ -27,7 +26,7 @@
 
 body {
     min-height: 100vh;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', Arial, sans-serif;
     background: linear-gradient(135deg, #07152e, #102d59, #174b83);
     color: var(--text);
     padding: 25px;
@@ -35,7 +34,7 @@ body {
     position: relative;
 }
 
-/* Background effects */
+/* Background glow */
 body::before,
 body::after {
     content: "";
@@ -61,6 +60,29 @@ body::after {
     right: -150px;
 }
 
+/* Back button */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(38, 133, 255, 0.15);
+    border: 1px solid rgba(121, 181, 255, 0.3);
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.back-btn:hover {
+    background: #2685ff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(38, 133, 255, 0.35);
+}
+
 /* Header */
 .header {
     text-align: center;
@@ -74,13 +96,13 @@ body::after {
 }
 
 .header h1 span {
-    color: #79b5ff;
+    color: var(--light-blue);
 }
 
 .header-icon {
     display: inline-block;
     font-size: 40px;
-    color: #79b5ff;
+    color: var(--light-blue);
     margin-right: 12px;
     vertical-align: middle;
 }
@@ -100,7 +122,7 @@ body::after {
     margin: 0 12px;
 }
 
-/* Timetable layout */
+/* Timetable */
 .timetable-wrapper {
     max-width: 1750px;
     margin: auto;
@@ -131,7 +153,7 @@ body::after {
     justify-content: center;
     align-items: center;
     font-size: 28px;
-    color: var(--primary-light);
+    color: var(--light-blue);
     border-bottom: 1px solid var(--border);
 }
 
@@ -175,7 +197,7 @@ body::after {
 }
 
 .day-header span {
-    color: var(--primary-light);
+    color: var(--light-blue);
     font-size: 23px;
 }
 
@@ -285,7 +307,7 @@ body::after {
     box-shadow: inset 4px 0 #8185ff;
 }
 
-/* Desktop positions */
+/* Desktop card positions */
 .monday .english {
     top: 252px;
     height: 117px;
@@ -352,7 +374,7 @@ body::after {
 
 .no-classes span {
     font-size: 27px;
-    color: var(--primary-light);
+    color: var(--light-blue);
 }
 
 /* Footer */
@@ -381,6 +403,12 @@ body::after {
         padding: 20px 14px;
     }
 
+    .back-btn {
+        margin-bottom: 25px;
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+
     .header {
         margin-bottom: 28px;
     }
@@ -404,7 +432,6 @@ body::after {
         margin: 0 7px;
     }
 
-    /* Change desktop grid into mobile list */
     .timetable-wrapper {
         overflow: visible;
         padding: 0;
@@ -417,7 +444,6 @@ body::after {
         gap: 18px;
     }
 
-    /* Hide separate time column */
     .time-column {
         display: none;
     }
@@ -426,7 +452,6 @@ body::after {
         height: auto;
         min-height: 0;
         border-radius: 18px;
-        overflow: hidden;
     }
 
     .day-header {
@@ -440,7 +465,6 @@ body::after {
         font-size: 22px;
     }
 
-    /* Cards become normal flow elements */
     .day-body {
         height: auto;
         min-height: 0;
@@ -523,6 +547,12 @@ body::after {
 
 <body>
 
+<!-- BACK TO HOME -->
+<a href="index.html" class="back-btn">
+    <span>←</span> Back to Home
+</a>
+
+<!-- HEADER -->
 <header class="header">
     <h1>
         <span class="header-icon">▦</span>
@@ -593,7 +623,7 @@ body::after {
         <div class="day-header"><span>▣</span> Tuesday</div>
         <div class="day-body">
 
-            <div class="class-card programming">
+            <div class="class-card english">
                 <div class="main">
                     <div class="class-icon">▤</div>
                     <div class="class-info">
